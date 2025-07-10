@@ -12,36 +12,42 @@ class temp{
 }obj;
 
 int main(){
-
     char choice;
-    cout<<"---------------------------"<<endl;
-    cout<<"1- Add Student Record"<<endl;
-    cout<<"2- View All Student Record"<<endl;
-    cout<<"3- Search Student Record"<<endl;
-    cout<<"4- Exit"<<endl;
-    cout<<"---------------------------"<<endl;
-    cin>>choice;
+    bool running = true;
+    
+    while(running) {
+        cout<<"\n---------------------------"<<endl;
+        cout<<"1- Add Student Record"<<endl;
+        cout<<"2- View All Student Record"<<endl;
+        cout<<"3- Search Student Record"<<endl;
+        cout<<"4- Exit"<<endl;
+        cout<<"---------------------------"<<endl;
+        cout<<"Enter your choice: ";
+        cin>>choice;
 
-    switch(choice){
-        case '1':
-            cin.ignore();
-            obj.addStu();
-        break;
-        case '2':
-            cin.ignore();
-            obj.viewStu();
-        break;
-        case '3':
-            cin.ignore();
-            obj.searchStu();
-        break;
-        case '4':
-            return 0;
-        break;
-        default:
-            cout<<"Invalid Choice...!";
+        switch(choice){
+            case '1':
+                cin.ignore();
+                obj.addStu();
+            break;
+            case '2':
+                cin.ignore();
+                obj.viewStu();
+            break;
+            case '3':
+                cin.ignore();
+                obj.searchStu();
+            break;
+            case '4':
+                running = false;
+                cout << "Exiting program. Goodbye!" << endl;
+            break;
+            default:
+                cout<<"Invalid Choice...! Please try again."<<endl;
+        }
     }
-
+    
+    return 0;
 }
 
 void temp :: addStu(){
@@ -66,22 +72,39 @@ void temp :: addStu(){
 void temp :: viewStu(){
     
     file.open("stuData.txt",ios :: in);
-    getline(file,rollNum,'*');
-    getline(file,name,'*');
-    getline(file,fName,'*');
-    getline(file,address,'\n');
-    while(!file.eof()){
+    
+    if(!file) {
+        cout << "\nError: Unable to open file or file does not exist!" << endl;
+        return;
+    }
+    
+    // Check if file is empty
+    if(file.peek() == std::ifstream::traits_type::eof()) {
+        cout << "\nNo student records found. The file is empty." << endl;
+        file.close();
+        return;
+    }
+    
+    bool recordsFound = false;
+    
+    // Read and display all records
+    while(getline(file, rollNum, '*') && 
+          getline(file, name, '*') && 
+          getline(file, fName, '*') && 
+          getline(file, address, '\n')) {
+        
+        recordsFound = true;
         cout<<"\n";
         cout<<"Student Roll Number :: "<<rollNum<<endl;
         cout<<"Student Name :: "<<name<<endl;
         cout<<"Student Father Name :: "<<fName<<endl;
         cout<<"Student Address :: "<<address<<endl;
-
-        getline(file,rollNum,'*');
-        getline(file,name,'*');
-        getline(file,fName,'*');
-        getline(file,address,'\n');
     }
+    
+    if(!recordsFound) {
+        cout << "\nNo student records found or file format is incorrect." << endl;
+    }
+    
     file.close();
 }
 
@@ -91,22 +114,40 @@ void temp :: searchStu(){
     getline(cin,search);
     
     file.open("stuData.txt",ios :: in);
-    getline(file,rollNum,'*');
-    getline(file,name,'*');
-    getline(file,fName,'*');
-    getline(file,address,'\n');
-    while(!file.eof()){
+    
+    if(!file) {
+        cout << "\nError: Unable to open file or file does not exist!" << endl;
+        return;
+    }
+    
+    // Check if file is empty
+    if(file.peek() == std::ifstream::traits_type::eof()) {
+        cout << "\nNo student records found. The file is empty." << endl;
+        file.close();
+        return;
+    }
+    
+    bool recordFound = false;
+    
+    // Read and search for the record
+    while(getline(file, rollNum, '*') && 
+          getline(file, name, '*') && 
+          getline(file, fName, '*') && 
+          getline(file, address, '\n')) {
+        
         if(rollNum == search){
             cout<<endl;
             cout<<"Student Roll Number :: "<<rollNum<<endl;
             cout<<"Student Name :: "<<name<<endl;
             cout<<"Student Father Name :: "<<fName<<endl;
-            cout<<"Student Address :: "<<address<<endl;       
+            cout<<"Student Address :: "<<address<<endl;
+            recordFound = true;
         }
-        getline(file,rollNum,'*');
-        getline(file,name,'*');
-        getline(file,fName,'*');
-        getline(file,address,'\n');
     }
+    
+    if(!recordFound) {
+        cout << "\nNo student found with Roll Number: " << search << endl;
+    }
+    
     file.close();
 }
