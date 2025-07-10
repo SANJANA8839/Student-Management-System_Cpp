@@ -1,4 +1,5 @@
 🎓 Student Management System (C++)
+
 This is a simple Student Management System created using C++, designed to help manage student records efficiently through a console-based interface.
 
 📋 Features
@@ -20,6 +21,7 @@ Exit :
 
 Exit the program safely.
 
-🛠️ Technologies Used
+🛠️ Technologies Used : 
 Programming Language: C++
+
 Platform: Console Application
